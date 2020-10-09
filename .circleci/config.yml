@@ -1,0 +1,75 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.2-node
+        environment:
+          PGHOST: 127.0.0.1
+          RAILS_ENV: test
+          DATABASE_NAME: remindersms_test
+          DATABASE_USER: circleci
+          DATABASE_PASSWORD: superduper
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: circleci
+          POSTGRES_HOST_AUTH_METHOD: trust
+          QUEUE_NAME: default
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run:
+          name: install bundler
+          command: gem install bundler:2.1.4
+      - run:
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run:
+          name: intall yarn dependencies
+          command: yarn
+          
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # Check formatting
+      - run: bundle exec standardrb
+
+      # Database setup
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:migrate
+      - run: bundle exec rake db:schema:load
+
+      # run tests!
+      - run:
+          name: run tests
+          command: |
+            mkdir /tmp/test-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | \
+              circleci tests split --split-by=timings)"
+            bundle exec rspec \
+              $TEST_FILES \
+              --out /tmp/test-results/rspec.xml \
+              --format progress
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+
+      - run:
+          name: Ensure seeds can be re-run
+          command: bundle exec rails db:seed && bundle exec rails db:seed
+workflows:
+  build-test-deploy:
+    jobs:
+      - build
