@@ -1,0 +1,8 @@
+a.navbar-brand {
+  font-weight: bold;
+  
+  & > span {
+  font-weight: normal;
+  color: red;
+  }
+}
