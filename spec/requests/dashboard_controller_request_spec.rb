@@ -9,7 +9,7 @@ describe DashboardController, type: :request do
 
     it "has 200 status" do
       get_show
-      
+
       expect(response).to have_http_status(200)
     end
   end
