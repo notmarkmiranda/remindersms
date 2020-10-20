@@ -1,2 +1,6 @@
-<%= @group.name %>
-<%= link_to "Add recipients" %>
+<div class="container">
+  <h1><%= @group.name %></h1>
+  <div class="row">
+    <%= link_to "Add recipients", "#", class: "btn btn-light" %>
+  </div>
+</div>

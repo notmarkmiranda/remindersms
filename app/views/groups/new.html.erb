@@ -1,6 +1,20 @@
-<%= form_for @group do |f| %>
-  <%= f.label :name, "Group Name"%>
-  <%= f.text_field :name %>
-
-  <%= f.submit "Create Group!" %>
-<% end%>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card mt-4 text-dark">    
+        <h5 class="card-header">New Group</h5>
+        <div class="card-body">
+          <%= form_for @group do |f| %>
+            <div class="form-group">
+              <%= f.label :name, "Group Name"%>
+              <%= f.text_field :name, class: "form-control" %>
+            </div>
+            <div class="actions">
+              <%= f.submit "Create Group!", class: "btn btn-light btn-block" %>
+            </div>
+          <% end%>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>
