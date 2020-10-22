@@ -76,6 +76,7 @@ describe Api::V1::GroupsController, type: :request do
         json = JSON.parse(response.body)
 
         expect(json).to eq({"errors" => "Nil JSON web token"})
+        expect(response).to have_http_status(401)
       end
     end
   end
