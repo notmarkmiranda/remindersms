@@ -4,4 +4,10 @@ Rails.application.routes.draw do
   get "/dashboard", to: "dashboard#show", as: "dashboard"
 
   resources :groups
+
+  namespace :api do
+    namespace :v1 do
+      resources :groups
+    end
+  end
 end
