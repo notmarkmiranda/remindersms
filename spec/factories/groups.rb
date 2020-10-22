@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :group do
-    name { Faker::Sports::Basketball.team }
+    sequence(:name) { |n| "Group Name #{n}" }
     user
   end
 end
