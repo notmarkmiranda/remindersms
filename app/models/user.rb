@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  SECRET_KEY = Rails.application.credentials.secret_key_base.to_s
+
   validates :email, presence: true
   validates :email, uniqueness: {case_sensitive: true}
 
@@ -11,4 +13,15 @@ class User < ApplicationRecord
     :validatable
 
   has_many :groups
+
+  def token
+    encode(user_id: id)
+  end
+
+  private
+
+  def encode(payload, expiration = 24.hours.from_now)
+    payload[:expiration] = expiration.to_i
+    JWT.encode(payload, SECRET_KEY)
+  end
 end
