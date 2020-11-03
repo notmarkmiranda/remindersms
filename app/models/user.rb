@@ -13,6 +13,7 @@ class User < ApplicationRecord
     :validatable
 
   has_many :groups
+  has_many :recipients
 
   def token
     encode(user_id: id)

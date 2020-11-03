@@ -9,6 +9,7 @@ describe User, type: :model do
 
   describe "relationships" do
     it { should have_many :groups }
+    it { should have_many :recipients }
   end
   describe "methods"
 end

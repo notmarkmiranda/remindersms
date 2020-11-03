@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       post "/registration", to: "registration#create"
 
       resources :groups
+      resources :recipients
     end
   end
 end
